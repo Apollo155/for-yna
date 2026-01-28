@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Yna Leaño 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+    margin:0;
+    height:100vh;
+    background:radial-gradient(circle at top,#ff9aa2,#ff5e78);
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:'Poppins',sans-serif;
+    color:#fff;
+}
+
+/* HEART RAIN */
+.heart{
+    position:absolute;
+    animation:fall linear infinite;
+    opacity:.8;
+}
+@keyframes fall{
+    from{transform:translateY(-10vh);}
+    to{transform:translateY(110vh);}
+}
+
+/* CONFETTI */
+.confetti{
+    position:absolute;
+    width:8px;
+    height:14px;
+    animation:confettiFall linear forwards;
+}
+@keyframes confettiFall{
+    to{transform:translateY(120vh) rotate(720deg);opacity:0;}
+}
+
+/* FIREWORK */
+.firework{
+    position:absolute;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    animation:explode 1.4s ease-out forwards;
+}
+@keyframes explode{
+    to{transform:translate(var(--x),var(--y)) scale(0);opacity:0;}
+}
+
+/* CARD */
+.card{
+    background:rgba(255,255,255,.18);
+    backdrop-filter:blur(18px);
+    border-radius:30px;
+    padding:38px 30px;
+    width:92%;
+    max-width:540px;
+    text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,.35);
+    z-index:2;
+}
+
+h1{
+    font-family:'Great Vibes',cursive;
+    font-size:58px;
+    margin:0;
+}
+
+h2{
+    font-weight:300;
+    margin:10px 0 20px;
+}
+
+.message{
+    min-height:230px;
+    font-size:16px;
+    line-height:1.9;
+}
+
+/* BUTTONS */
+.buttons, .tools{margin-top:20px;}
+
+button{
+    padding:12px 26px;
+    border:none;
+    border-radius:40px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin:6px;
+    transition:.3s;
+}
+
+.yes{background:#fff;color:#ff4f6d;}
+.no{background:transparent;color:#fff;border:2px solid #fff;position:relative;}
+.tool{background:transparent;border:2px solid #fff;color:#fff;}
+
+.yes:hover{transform:scale(1.1);}
+
+/* GLOWING LOVE */
+.love{
+    display:none;
+    font-family:'Great Vibes',cursive;
+    font-size:44px;
+    animation:glow 2s infinite;
+}
+@keyframes glow{
+    50%{text-shadow:0 0 35px #ffdde1,0 0 55px #ff4f6d;}
+}
+
+/* KEEPSAKE */
+.keepsake{display:none;}
+.date{font-size:14px;opacity:.9;margin-top:6px;}
+
+.signature{
+    margin-top:24px;
+    font-size:14px;
+    opacity:.95;
+}
+
+/* CERTIFICATE */
+#certificate{
+    display:none;
+    padding:60px;
+    color:#000;
+    text-align:center;
+    font-family:'Poppins',sans-serif;
+}
+#certificate h1{font-family:'Great Vibes',cursive;font-size:54px;}
+
+@media print{
+    body *{visibility:hidden;}
+    #certificate, #certificate *{visibility:visible;}
+    #certificate{position:absolute;top:0;left:0;width:100%;}
+}
+
+@media(max-width:480px){
+    h1{font-size:46px;}
+    .love{font-size:36px;}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgm" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/02/23/audio_46d2c3f8b5.mp3">
+</audio>
+
+<div class="card" id="card">
+    <h1>Happy Valentine’s</h1>
+    <h2>My Love 💕</h2>
+
+    <div class="message" id="typing"></div>
+
+    <div class="buttons" id="buttons">
+        <button class="yes" onclick="sayYes()">YES 💖</button>
+        <button class="no" id="noBtn">NO 🙈</button>
+    </div>
+
+    <div class="keepsake" id="keepsake">
+        <div class="love" id="loveText">I love you 💖</div>
+        <div class="date" id="savedDate"></div>
+
+        <div class="tools">
+            <button class="tool" onclick="saveImage()">💌 Save Image</button>
+            <button class="tool" onclick="openWallpaper()">💍 Wallpaper</button>
+            <button class="tool" onclick="printCert()">📜 Certificate</button>
+        </div>
+    </div>
+
+    <div class="signature">
+        Forever yours,<br><strong>Jess Andrei Bisquera</strong>
+    </div>
+</div>
+
+<!-- CERTIFICATE -->
+<div id="certificate">
+    <h1>Love Certificate</h1>
+    <p>This certifies that</p>
+    <h2>Yna Leaño</h2>
+    <p>said YES to</p>
+    <h2>Jess Andrei Bisquera</h2>
+    <p>on</p>
+    <h3 id="certDate"></h3>
+    <p>💖 Forever begins here 💖</p>
+</div>
+
+<script>
+/* TYPING */
+const text=`To the girl who became my favorite thought without trying,
+
+Yna Leaño,
+loving you feels gentle, warm, and right.
+
+In every version of my future,
+there’s always you.
+
+So tell me…
+will you be my Valentine?`;
+
+let i=0;
+const t=document.getElementById("typing");
+function type(){
+    if(i<text.length){
+        t.innerHTML+=text.charAt(i++);
+        setTimeout(type,40);
+    }
+}
+type();
+
+/* LOAD KEEPSAKE */
+if(localStorage.getItem("ynaYes")){
+    showKeepsake(false);
+}
+
+/* YES */
+function sayYes(){
+    const d=new Date().toDateString();
+    localStorage.setItem("ynaYes",d);
+    showKeepsake(true);
+}
+
+/* SHOW KEEPSAKE */
+function showKeepsake(celebrate){
+    document.getElementById("buttons").style.display="none";
+    document.getElementById("typing").style.display="none";
+    document.getElementById("keepsake").style.display="block";
+    document.getElementById("loveText").style.display="block";
+    document.getElementById("savedDate").innerText="Saved on " + localStorage.getItem("ynaYes");
+    document.getElementById("certDate").innerText=localStorage.getItem("ynaYes");
+    document.getElementById("bgm").play();
+    if(celebrate){confetti();fireworks();}
+}
+
+/* CONFETTI */
+function confetti(){
+    const colors=["#ff4f6d","#ffd166","#fff","#ff9aa2"];
+    for(let i=0;i<150;i++){
+        let c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=Math.random()*100+"vw";
+        c.style.background=colors[Math.floor(Math.random()*colors.length)];
+        c.style.animationDuration=(3+Math.random()*3)+"s";
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),6000);
+    }
+}
+
+/* FIREWORKS */
+function fireworks(){
+    for(let i=0;i<90;i++){
+        let f=document.createElement("div");
+        f.className="firework";
+        f.style.left="50vw";
+        f.style.top="50vh";
+        f.style.background="#fff";
+        f.style.setProperty("--x",(Math.random()*420-210)+"px");
+        f.style.setProperty("--y",(Math.random()*420-210)+"px");
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(),1500);
+    }
+}
+
+/* EXPORT IMAGE */
+function saveImage(){
+    html2canvas(document.getElementById("card")).then(c=>{
+        let a=document.createElement("a");
+        a.href=c.toDataURL();
+        a.download="yna-yes-keepsake.png";
+        a.click();
+    });
+}
+
+/* WALLPAPER */
+function openWallpaper(){
+    const w=window.open();
+    w.document.write(`<style>
+        body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;
+        background:linear-gradient(135deg,#ff758c,#ff7eb3);
+        font-family:'Great Vibes',cursive;color:white;}
+        h1{font-size:72px;text-align:center;}
+    </style><h1>I love you<br>Yna 💖</h1>`);
+}
+
+/* PRINT */
+function printCert(){window.print();}
+
+/* NO DODGE */
+const noBtn=document.getElementById("noBtn");
+noBtn.onmouseover=()=>{noBtn.style.left=Math.random()*120-60+"px";noBtn.style.top=Math.random()*60-30+"px";};
+
+/* HEARTS */
+for(let h=0;h<40;h++){
+    let e=document.createElement("div");
+    e.className="heart";
+    e.innerHTML="❤";
+    e.style.left=Math.random()*100+"vw";
+    e.style.fontSize=(14+Math.random()*26)+"px";
+    e.style.animationDuration=(6+Math.random()*6)+"s";
+    document.body.appendChild(e);
+}
+</script>
+
+</body>
+</html>
